@@ -26,7 +26,8 @@ cleanup() {
 trap 'cleanup; exit 0' INT TERM
 
 while true; do
-  xinit /usr/bin/openbox-session -- /usr/bin/Xorg "$DISPLAY" -vt1 -s 0 -dpms &
+  # -s 0 and -dpms keep the attached display awake for kiosk operation.
+  xinit /usr/bin/openbox-session -- /usr/bin/Xorg "$DISPLAY" -vt 1 -s 0 -dpms &
   XINIT_PID=$!
 
   # Delay is configurable because device startup time can vary.
@@ -44,7 +45,12 @@ while true; do
     --disable-session-crashed-bubble \
     --password-store=basic &
   CHROMIUM_PID=$!
-  wait "$CHROMIUM_PID" || true
+  if wait "$CHROMIUM_PID"; then
+    :
+  else
+    CHROMIUM_EXIT_CODE=$?
+    echo "Chromium exited unexpectedly with status ${CHROMIUM_EXIT_CODE}" >&2
+  fi
 
   cleanup
   unset XINIT_PID CHROMIUM_PID
