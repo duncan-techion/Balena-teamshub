@@ -5,6 +5,7 @@ export DISPLAY=:0
 TEAMS_URL="${TEAMS_URL:-https://teams.microsoft.com/v2/}"
 PROFILE_DIR="/data/profile"
 XORG_STARTUP_DELAY="${XORG_STARTUP_DELAY:-3}"
+XORG_VT="${XORG_VT:-7}"
 
 mkdir -p "$PROFILE_DIR"
 
@@ -27,7 +28,7 @@ trap 'cleanup; exit 0' INT TERM
 
 while true; do
   # -s 0 and -dpms keep the attached display awake for kiosk operation.
-  xinit /usr/bin/openbox-session -- /usr/bin/Xorg "$DISPLAY" -vt 7 -s 0 -dpms &
+  xinit /usr/bin/openbox-session -- /usr/bin/Xorg "$DISPLAY" -vt "$XORG_VT" -s 0 -dpms &
   XINIT_PID=$!
 
   # Delay is configurable because device startup time can vary.
@@ -45,10 +46,8 @@ while true; do
     --disable-session-crashed-bubble \
     --password-store=basic &
   CHROMIUM_PID=$!
-  set +e
-  wait "$CHROMIUM_PID"
-  CHROMIUM_EXIT_CODE=$?
-  set -e
+  CHROMIUM_EXIT_CODE=0
+  wait "$CHROMIUM_PID" || CHROMIUM_EXIT_CODE=$?
   if [[ $CHROMIUM_EXIT_CODE -ne 0 ]]; then
     echo "Chromium exited unexpectedly with status ${CHROMIUM_EXIT_CODE}" >&2
   fi

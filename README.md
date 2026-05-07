@@ -35,6 +35,7 @@ Set these environment variables in balena Cloud if needed:
 - `TEAMS_URL` (default: `https://teams.microsoft.com/v2/`)
 - `TZ` (default: `UTC`)
 - `XORG_STARTUP_DELAY` (default: `3`)
+- `XORG_VT` (default: `7`)
 
 ## Security note
 
