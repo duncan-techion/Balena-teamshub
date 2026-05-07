@@ -6,7 +6,7 @@
       "version": "lts"
     }
   },
-  "postCreateCommand": "npm install -g --unsafe-perm @balena/cli",
+  "postCreateCommand": "npm install -g @balena/cli",
   "customizations": {
     "vscode": {
       "extensions": [
