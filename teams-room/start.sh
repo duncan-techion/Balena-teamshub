@@ -4,6 +4,7 @@ set -euo pipefail
 export DISPLAY=:0
 TEAMS_URL="${TEAMS_URL:-https://teams.microsoft.com/v2/}"
 PROFILE_DIR="/data/profile"
+XORG_STARTUP_DELAY="${XORG_STARTUP_DELAY:-3}"
 
 mkdir -p "$PROFILE_DIR"
 
@@ -25,11 +26,11 @@ cleanup() {
 trap 'cleanup; exit 0' INT TERM
 
 while true; do
-  xinit /usr/bin/openbox-session -- /usr/bin/Xorg "$DISPLAY" vt1 -s 0 -dpms &
+  xinit /usr/bin/openbox-session -- /usr/bin/Xorg "$DISPLAY" -vt1 -s 0 -dpms &
   XINIT_PID=$!
 
-  # Allow Xorg to come up before launching Chromium.
-  sleep 3
+  # Delay is configurable because device startup time can vary.
+  sleep "$XORG_STARTUP_DELAY"
 
   chromium \
     --kiosk "$TEAMS_URL" \
