@@ -40,3 +40,18 @@ Set these environment variables in balena Cloud if needed:
 ## Security note
 
 The service runs with `privileged: true` so Chromium/Xorg can access GPU, audio, camera, and USB input devices on the host.
+
+## Devcontainer
+
+This repository includes `.devcontainer/devcontainer.json` for local development in VS Code Dev Containers or GitHub Codespaces.
+
+It installs:
+
+- Node.js (LTS)
+- balena CLI (`@balena/cli`)
+
+After the container is created, verify the install with:
+
+```bash
+balena --version
+```
